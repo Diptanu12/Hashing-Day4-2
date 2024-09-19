@@ -1,0 +1,89 @@
+Strong numbers
+A number N is strong if for every prime factor X that it has, X square also divides it. You are given a number a N, return true if it is strong, else return false.
+
+Note Complete the given function. The input and output would be handled by the driver code.
+
+Input Format
+The first line contains a single integer N.
+
+Output Format
+Print the answer in a new line. 1 for true and 0 for false.
+
+Example 1
+Input
+
+7
+Output
+
+0
+Explanation
+
+7 has a prime 7 as a prime factor. 7 square is 49. 49 does not divide 7.
+
+Example 2
+Input
+
+72
+Output
+
+1
+Explanation
+
+The prime factors of 72 are 2 and 3. 2 square is 4, and 3 squared is 9. 4 and 9 both divide 72.
+
+Constraints
+1 <= N <= 10000
+
+Topics
+Basics
+Math
+
+
+
+import java.io.*;
+import java.util.*;
+
+class Main {
+    public static boolean strongNumbers(long n) {
+        if (n < 2) return false;
+        
+        long originalN = n;
+        List<Long> primeFactors = getPrimeFactors(n);
+
+        for (long prime : primeFactors) {
+            if (originalN % (prime * prime) != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static List<Long> getPrimeFactors(long n) {
+        List<Long> primeFactors = new ArrayList<>();
+        long factor = 2;
+        while (factor * factor <= n) {
+            if (n % factor == 0) {
+                primeFactors.add(factor);
+                while (n % factor == 0) {
+                    n /= factor;
+                }
+            }
+            factor++;
+        }
+        if (n > 1) {
+            primeFactors.add(n);
+        }
+        return primeFactors;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));	
+        long n = Long.parseLong(br.readLine().trim());
+        if (strongNumbers(n)) {
+            System.out.println(1);
+        } else {
+            System.out.println(0);
+        }
+    }
+}
