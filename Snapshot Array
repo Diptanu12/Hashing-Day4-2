@@ -1,0 +1,144 @@
+Snapshot Array
+Implement a SnapshotArray that supports the following interface:
+
+`SnapshotArray(int length)` initializes an array-like data structure with the given length. Initially, each element equals 0.
+`void set(index, val)` sets the element at the given `index` to be equal to `val`.
+`int snap()` takes a snapshot of the array and returns the `snap_id`: the total number of times we called `snap()` minus 1.
+`int get(index, snap_id)` returns the value at the given `index`, at the time we took the snapshot with the given `snap_id`
+Input Format
+First line consists of 2 integers n denoting the number of actions to perform and m, the length of the snapshot array to be initialised.
+
+Next n lines carrying the function name and the space separated parameters required by the function.
+
+Output Format
+Integer output in different lines corresponding to snap and get function.
+
+Example 1
+Input
+
+4 4
+set 0 6
+snap
+set 0 3
+get 0 0
+Output
+
+0
+6
+Explanation
+
+SnapshotArray snapshotArr = new SnapshotArray(4); // set the length to be 4
+snapshotArr.set(0,6);  // Set array[0] = 6
+snapshotArr.snap();  // Take a snapshot, return snap_id = 0
+snapshotArr.set(0,3);
+snapshotArr.get(0,0);  // Get the value of array[0] with snap_id = 0, return 6
+Example 2
+Input
+
+7 6
+set 1 4
+set 3 34
+snap
+get 3 0
+set 3 5
+snap
+get 3 1
+Output
+
+0
+34
+1
+5
+Explanation
+
+Create  the snapshot array of length 6.
+set index 1 as 4 // 0 4 0 0 0 0
+set index 3 as 34 // 0 4 0 34 0 0
+take a snap // 0 4 0 34 0 0
+get index 3 at snap 0// 34
+set index 3 as 5// 0 4 0 5 0 0
+take a snap // 0 4 0 5 0 0
+get index 3 from snap 1//5
+Constraints
+1 <= length <= 5 * 10^4
+
+0 <= index < length
+
+0 <= val <= 10^9
+
+0 <= snap_id < (the total number of times we call snap())
+
+At most 5 * 10^4 calls will be made to set, snap, and get.
+
+Topics
+Arrays
+Hashing
+
+
+
+import java.util.*;
+
+public class Main {
+    static HashMap<Integer, Integer>[] mapArray;
+    static int snapId;
+
+    public static void SnapshotArray(int length) {
+        mapArray = new HashMap[length];
+        snapId = 0;
+    }
+
+    public static void set(int index, int val) {
+        if (mapArray[index] == null) {
+            mapArray[index] = new HashMap<>();
+        }
+
+        mapArray[index].put(snapId, val);
+    }
+
+    public static int snap() {
+        snapId++;
+        return snapId - 1;
+    }
+
+    public static int get(int index, int snap_id) {
+        if (mapArray[index] == null) {
+            return 0;
+        }
+
+        while (snap_id >= 0 && mapArray[index].containsKey(snap_id) == false) {
+            snap_id--;
+        }
+
+        if (snap_id == -1) {
+            return 0;
+        }
+
+        return mapArray[index].get(snap_id);
+    }
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt();
+        String temp;
+        int param1, param2;
+        param1 = input.nextInt();
+        SnapshotArray(param1);
+        String[] arr = new String[n];
+        for (int i = 0; i < n; i++) {
+
+            temp = input.next();
+            if (temp.equals("set") || temp.equals("get")) {
+                param1 = input.nextInt();
+                param2 = input.nextInt();
+                if (temp.equals("set")) {
+                    set(param1, param2);
+                } else {
+                    System.out.println(get(param1, param2));
+                }
+            } else {
+                System.out.println(snap());
+            }
+        }
+
+    }
+}
